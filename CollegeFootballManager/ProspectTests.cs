@@ -7,13 +7,20 @@ namespace CollegeFootballManager
     [TestFixture]
     public class TestFixtureName
     {
+        [SetUp]
+        public void SetUp()
+        {
+            FootballManagerDatabase.Clear();
+        }
+
+
         [Test]
         public void ProspectGenerator_should_generate_prospects()
         {
             var numberOfProspectsToGenerate = 100;
             var seasonId = 1;
-            
-            ProspectGenerator prospectGenerator = new ProspectGenerator(numberOfProspectsToGenerate, seasonId);
+
+            ProspectGenerator prospectGenerator = new ProspectGenerator(GetInMemoryFirstNameGenerator(), numberOfProspectsToGenerate, seasonId);
 
             prospectGenerator.Generate();
 
@@ -23,6 +30,48 @@ namespace CollegeFootballManager
 
         }
 
+        [Test]
+        public void ProspectGenerator_should_generate_first_name_from_firstName_masterList()
+        {
+            var NameList = new List<string>() {"Andy", "Billy"};
+            var nameGenerator = GetInMemoryFirstNameGenerator(NameList);
+            ProspectGenerator prospectGenerator = new ProspectGenerator(nameGenerator, 1, 1);
+            prospectGenerator.Generate();
+
+            var prospect = FootballManagerDatabase.GetAllProspectsBySeason(1).ToList()[0];
+
+            Assert.IsTrue(NameList.Contains(prospect.FirstName));
+
+        }
+
+        InMemoryNameGenerator GetInMemoryFirstNameGenerator(List<string> NameList = null)
+        {
+            
+            return new InMemoryNameGenerator(NameList ?? new List<string>(){"Jack"});
+            
+        }
+    }
+
+    public interface INameGenerator
+    {
+        string Generate();
+    }
+
+    public class InMemoryNameGenerator : INameGenerator
+    {
+        readonly IEnumerable<string> _nameList;
+
+        public InMemoryNameGenerator(IEnumerable<string> nameList)
+        {
+            _nameList = nameList;
+        }
+
+        public string Generate()
+        {
+            var RandNum = new System.Random();
+            int MyRandomNumber = RandNum.Next(0, _nameList.ToList().Count);
+            return _nameList.ToList()[MyRandomNumber];
+        }
     }
 
     public class FootballManagerDatabase
@@ -38,15 +87,27 @@ namespace CollegeFootballManager
         {
             _Prospects.Add(prospect);
         }
+
+        public static void Clear()
+        {
+            _Prospects.Clear();
+        }
     }
 
-    public class ProspectGenerator
+    public interface IGenerator
     {
+        void Generate();
+    }
+
+    public class ProspectGenerator : IGenerator
+    {
+        readonly INameGenerator _firstNameGenerator;
         readonly int _numberOfProspectsToGenerate;
         readonly int _seasonId;
 
-        public ProspectGenerator(int numberOfProspectsToGenerate, int seasonId)
+        public ProspectGenerator(INameGenerator firstNameGenerator, int numberOfProspectsToGenerate, int seasonId)
         {
+            _firstNameGenerator = firstNameGenerator;
             _numberOfProspectsToGenerate = numberOfProspectsToGenerate;
             _seasonId = seasonId;
         }
@@ -55,7 +116,7 @@ namespace CollegeFootballManager
         {
             for(int i = 0; i<_numberOfProspectsToGenerate; i++)
             {
-                Prospect p = new Prospect("", "", _seasonId);
+                Prospect p = new Prospect(_firstNameGenerator.Generate(), "", _seasonId);
                 FootballManagerDatabase.AddProspect(p);
             }
         }
@@ -63,18 +124,25 @@ namespace CollegeFootballManager
 
     public class Prospect
     {
-        readonly string _name;
+        readonly string _firstName;
         readonly string _position;
         readonly int _seasonId;
+        
 
         public int SeasonId
         {
             get { return _seasonId; }
         }
 
-        public Prospect(string name, string position, int seasonId)
+        public string FirstName
         {
-            _name = name;
+            get { return _firstName; }
+           
+        }
+
+        public Prospect(string firstName, string position, int seasonId)
+        {
+            _firstName = firstName;
             _position = position;
             _seasonId = seasonId;
             
