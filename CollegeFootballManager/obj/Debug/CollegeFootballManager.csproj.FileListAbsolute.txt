@@ -1,0 +1,7 @@
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\bin\Debug\CollegeFootballManager.dll
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\bin\Debug\CollegeFootballManager.pdb
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\bin\Debug\nunit.framework.dll
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\bin\Debug\nunit.framework.xml
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\obj\Debug\ResolveAssemblyReference.cache
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\obj\Debug\CollegeFootballManager.dll
+c:\users\scottdev\documents\visual studio 2010\Projects\CollegeFootballManager\CollegeFootballManager\obj\Debug\CollegeFootballManager.pdb
